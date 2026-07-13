@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------------
+   Zagroda.io — design tokens
+   Light, warm, editorial — inspired by elevenlabs.io. High-contrast black ink
+   on warm paper, soft pastel cards, one deep-green agricultural accent.
+---------------------------------------------------------------------------- */
+@theme {
+  /* surfaces */
+  --color-bg: #ffffff;
+  --color-bg-warm: #f6f5f1;
+  --color-bg-soft: #f1f0ea;
+  --color-surface: #ffffff;
+  --color-surface-2: #f3f2ec;
+
+  /* lines */
+  --color-line: #e7e5dd;
+  --color-line-strong: #d7d4ca;
+
+  /* ink */
+  --color-ink: #0a0a0a;
+  --color-fg: #121212;
+  --color-muted: #6c6b64;
+  --color-faint: #9c9a90;
+
+  /* agricultural accent (used sparingly) */
+  --color-brand: #2f7d4f;
+  --color-brand-deep: #1d5234;
+  --color-brand-soft: #e7f0e6;
+
+  /* soft pastel card fills (elevenlabs-like) */
+  --color-sage: #e8efe1;
+  --color-cream: #f3ede0;
+  --color-sky: #e6edf3;
+  --color-clay: #f1e8e1;
+  --color-lilac: #ece7f3;
+
+  /* status */
+  --color-alert: #cf4034;
+  --color-warn: #c0871a;
+  --color-info: #2f6db0;
+
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-display:
+    var(--font-display), var(--font-inter), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono:
+    var(--font-mono), ui-monospace, "SF Mono", "JetBrains Mono", Menlo,
+    monospace;
+
+  --radius: 1rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: #d9ead0;
+    color: #0a0a0a;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.16);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.28);
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  /* headline highlight — deep green agricultural accent */
+  .text-accent {
+    color: var(--color-brand-deep);
+  }
+  .text-gradient-brand {
+    background: linear-gradient(100deg, #2f7d4f 0%, #1d5234 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* frosted nav */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(16px);
+    border: 1px solid var(--color-line);
+  }
+
+  /* faint grid / dots on light */
+  .bg-grid {
+    background-image: linear-gradient(
+        to right,
+        rgba(10, 10, 10, 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(
+      rgba(10, 10, 10, 0.07) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  /* dark grid for the hero product window (lines on dark) */
+  .bg-grid-dark {
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+  }
+  .mask-fade-radial {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 45%,
+      #000 0%,
+      #000 55%,
+      transparent 82%
+    );
+    mask-image: radial-gradient(
+      circle at 50% 45%,
+      #000 0%,
+      #000 55%,
+      transparent 82%
+    );
+  }
+
+  .animate-marquee {
+    animation: marquee 36s linear infinite;
+  }
+  .pause-on-hover:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-9px);
+    }
+  }
+  .animate-float {
+    animation: float-slow 7s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
