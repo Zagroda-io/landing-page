@@ -48,9 +48,10 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.12 }}
             className="mt-6 max-w-xl text-pretty text-base text-muted sm:text-lg"
           >
-            Kamera w oborze wychwytuje zdarzenie, czujnik na obroży wskazuje,
-            której krowy dotyczy — a Ty dostajesz powiadomienie na telefon z
-            krótkim nagraniem. Całym stadem zarządzasz z jednej platformy.
+            Kamery z AI obserwują stado przez całą dobę, a czujniki na obrożach
+            mówią, co dzieje się z każdą krową. Razem pozwalają wcześnie
+            zauważyć chorobę, ruję czy kulawiznę i dać Ci znać, zanim zrobi się
+            z tego problem.
           </motion.p>
 
           <motion.div
