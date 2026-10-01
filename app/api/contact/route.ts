@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { site } from "@/lib/site";
 import {
-  EMAIL_RE,
   contactLimits,
   contactSummary,
+  validateContact,
   type ContactPayload,
 } from "@/lib/contact";
 
@@ -56,12 +56,7 @@ export async function POST(req: Request) {
     consent: body.consent === true,
   };
 
-  if (
-    !p.name ||
-    (!p.email && !p.phone) ||
-    (p.email && !EMAIL_RE.test(p.email)) ||
-    !p.consent
-  ) {
+  if (Object.keys(validateContact(p)).length > 0) {
     return reply(400, "invalid");
   }
 
