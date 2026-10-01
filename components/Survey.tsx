@@ -41,7 +41,7 @@ export async function Survey() {
     : null;
 
   return (
-    <section id="ankieta" className="relative py-24 sm:py-32">
+    <section id="ankieta" className="relative pb-24 sm:pb-32">
       <Container>
         <Reveal>
           <div className="relative overflow-hidden rounded-[2rem] bg-[#0a0d0b] px-6 py-14 sm:px-12 sm:py-20">
