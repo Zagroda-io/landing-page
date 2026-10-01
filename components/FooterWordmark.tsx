@@ -1,86 +1,92 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-import { LogoMark } from "@/components/Logo";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 
-const WordmarkScene = dynamic(() => import("@/components/WordmarkScene"), {
-  ssr: false,
-  loading: () => null,
-});
+/* Logo mark paths (same as components/Logo.tsx, viewBox 0 0 28 28). */
+const MARK_PATHS = [
+  "M14 24 Q13.7 14.5 14 5.4",
+  "M14 24 Q11.2 15 9.1 9.2",
+  "M14 24 Q16.8 15 18.9 9.2",
+  "M14 24 Q9.2 16.4 5.7 12.6",
+  "M14 24 Q18.8 16.4 22.3 12.6",
+];
+
+/*
+ * SVG layout (viewBox 1000 × 132): mark on the left, "ZAGRODA" stretched to
+ * the remaining width with textLength, so it always spans the content column.
+ * Cap height ≈ 110 units, baseline at 121.
+ */
+const CAP = 110;
+const BASE = 121;
+const MARK_SCALE = CAP / (26.1 - 5.4);
+const TEXT_X = 138;
+const MARK_X = 6; // keeps the round stroke caps inside the viewBox
 
 /**
- * Oversized "ZAGRODA" wordmark. Static type renders first (and stays if WebGL
- * is unavailable); when scrolled into view a three.js particle version
- * gathers in its place, sways gently and parts around the pointer.
+ * Oversized "ZAGRODA" wordmark. Sits dimmed and lights up (ink + brand green)
+ * once the page is scrolled all the way to the bottom.
  */
 export function FooterWordmark() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  const [seen, setSeen] = useState(false);
-  const [ready, setReady] = useState(false);
-  const [still, setStill] = useState(false);
-  const [family, setFamily] = useState<string | null>(null);
-  // dots get too small to read on phones — keep the static type there
-  const [wide, setWide] = useState(false);
+  const [lit, setLit] = useState(false);
 
   useEffect(() => {
-    setStill(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    setWide(window.matchMedia("(min-width: 640px)").matches);
-    // resolve the next/font family name behind the CSS variable
-    setFamily(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--font-brand")
-        .trim() || "sans-serif",
-    );
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        setInView(e.isIntersecting);
-        if (e.isIntersecting) setSeen(true);
-      },
-      { threshold: 0.25 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    const check = () => {
+      const bottom = window.innerHeight + window.scrollY;
+      setLit(bottom >= document.documentElement.scrollHeight - 8);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
   }, []);
 
-  const showParticles = ready && seen;
+  const fade = "transition-[fill,stroke] duration-700 ease-out";
 
   return (
-    <div
-      ref={ref}
-      aria-hidden="true"
-      className="relative mt-6 aspect-[1400/280] w-full select-none"
-    >
-      {/* static fallback */}
-      <div
-        className={cn(
-          "absolute inset-0 flex items-center justify-center gap-[2.6vw] transition-opacity duration-700",
-          showParticles ? "opacity-0" : "opacity-100",
-        )}
+    <div className="pt-12 sm:pt-16">
+      <svg
+        viewBox="0 0 1000 132"
+        className="block h-auto w-full select-none"
+        role="img"
+        aria-label="Zagroda"
       >
-        <LogoMark className="h-[12.5vw] w-[12.5vw] shrink-0 text-ink" />
-        <span
-          className="text-[12.4vw] font-semibold uppercase leading-none tracking-[-0.02em] text-ink"
+        <g
+          transform={`translate(${MARK_X - 5.7 * MARK_SCALE} ${BASE - CAP - 5.4 * MARK_SCALE}) scale(${MARK_SCALE})`}
+        >
+          <g
+            fill="none"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            className={cn(fade, lit ? "stroke-brand" : "stroke-[#cfe0cf]")}
+          >
+            {MARK_PATHS.map((d) => (
+              <path key={d} d={d} />
+            ))}
+          </g>
+          <circle
+            cx="14"
+            cy="24.2"
+            r="2.3"
+            className={cn(fade, lit ? "fill-brand-deep" : "fill-[#cfe0cf]")}
+          />
+        </g>
+        <text
+          x={TEXT_X}
+          y={BASE}
+          textLength={1000 - TEXT_X}
+          lengthAdjust="spacingAndGlyphs"
+          fontSize="143"
+          fontWeight="600"
+          className={cn(fade, lit ? "fill-ink" : "fill-line-strong")}
           style={{ fontFamily: "var(--font-brand)" }}
         >
-          Zagroda
-        </span>
-      </div>
-
-      {seen && wide && !still && family && (
-        <div className="absolute inset-0">
-          <WordmarkScene
-            fontFamily={family}
-            play={inView}
-            still={still}
-            onReady={() => setReady(true)}
-          />
-        </div>
-      )}
+          ZAGRODA
+        </text>
+      </svg>
     </div>
   );
 }

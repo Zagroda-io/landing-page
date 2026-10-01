@@ -6,7 +6,7 @@ import { nav, site, surveyHref } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-bg-warm pt-14">
+    <footer className="relative overflow-hidden border-t border-line bg-bg-warm py-14">
       <Container>
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           <div className="max-w-xs">
@@ -125,7 +125,9 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 text-xs text-faint sm:flex-row sm:items-center">
+        <FooterWordmark />
+
+        <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 text-xs text-faint sm:flex-row sm:items-center">
           <p>
             © {new Date().getFullYear()} {site.name} · projekt i realizacja{" "}
             <a
@@ -143,8 +145,6 @@ export function Footer() {
           </span>
         </div>
       </Container>
-
-      <FooterWordmark />
     </footer>
   );
 }
