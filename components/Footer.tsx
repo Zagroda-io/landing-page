@@ -1,5 +1,6 @@
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
-import { Logo, LogoMark } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
+import { FooterWordmark } from "@/components/FooterWordmark";
 import { Container, linkTargetProps } from "@/components/primitives";
 import { nav, site, surveyHref } from "@/lib/site";
 
@@ -143,19 +144,7 @@ export function Footer() {
         </div>
       </Container>
 
-      {/* oversized wordmark across the full width */}
-      <div
-        aria-hidden="true"
-        className="mt-10 flex select-none items-center justify-center gap-[2vw] overflow-hidden px-5 pb-4 sm:px-8"
-      >
-        <LogoMark className="h-[12vw] w-[12vw] shrink-0 text-ink" />
-        <span
-          className="text-[19vw] font-semibold leading-[1.15] tracking-[-0.05em] text-ink"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          Zagroda
-        </span>
-      </div>
+      <FooterWordmark />
     </footer>
   );
 }

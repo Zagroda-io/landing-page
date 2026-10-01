@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import {
+  Inter,
+  Inter_Tight,
+  JetBrains_Mono,
+  Unbounded,
+} from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -13,6 +18,14 @@ const display = Inter_Tight({
   subsets: ["latin", "latin-ext"],
   variable: "--font-display",
   weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+/* brand wordmark (footer) — wide geometric caps */
+const brand = Unbounded({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-brand",
+  weight: ["600"],
   display: "swap",
 });
 
@@ -72,7 +85,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${inter.variable} ${display.variable} ${mono.variable}`}
+      className={`${inter.variable} ${display.variable} ${mono.variable} ${brand.variable}`}
     >
       <body>{children}</body>
     </html>
