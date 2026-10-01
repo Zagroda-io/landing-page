@@ -3,28 +3,29 @@ export const site = {
   domain: "zagroda.io",
   tagline: "Rolnictwo nowej generacji",
   description:
-    "Zagroda czuwa nad Twoim stadem dzień i noc. Kamery i czujniki same rozpoznają ruję, wycielenie, kulawiznę czy upadek i od razu dają znać na telefon — z krótkim nagraniem.",
+    "Zagroda.io to rozwijany system opieki nad stadem bydła. Kamera w oborze wykrywa zdarzenie, czujnik na obroży wskazuje, której krowy dotyczy, a Ty dostajesz powiadomienie na telefon. Całym stadem zarządzasz z jednej platformy.",
   appUrl: "https://app.dev.zagroda.io/",
   appLabel: "Zaloguj się",
-  demoUrl: "mailto:kontakt@zagroda.io?subject=Demo%20Zagroda.io",
+  /**
+   * Link do ankiety (np. Google Forms, Tally, Microsoft Forms).
+   * Dopóki jest pusty, przyciski „Wypełnij ankietę” prowadzą do formularza
+   * kontaktowego, a kod QR w sekcji ankiety się nie wyświetla.
+   */
+  surveyUrl: "" as string,
   company: "Exito Development",
   companyUrl: "https://www.exito-development.pl/",
   email: "kontakt@zagroda.io",
 } as const;
 
-export const nav = [
-  { label: "Co potrafi", href: "#produkt" },
-  { label: "Jak to działa", href: "#jak-to-dziala" },
-  { label: "Co wykrywa", href: "#wykrywanie" },
-  { label: "Aplikacja", href: "#platforma" },
-  { label: "Dlaczego Zagroda", href: "#technologia" },
-] as const;
+/** Where every "Wypełnij ankietę" button points. */
+export const surveyHref = site.surveyUrl || "#kontakt";
 
-export const stats = [
-  { value: "24/7", label: "Czuwamy nad stadem dzień i noc" },
-  { value: "< 1 min", label: "Tyle zajmuje powiadomienie o zdarzeniu" },
-  { value: "10 s", label: "Nagranie dołączone do każdego alertu" },
-  { value: "95%", label: "Skuteczność w rozpoznawaniu ważnych sytuacji" },
+export const nav = [
+  { label: "Możliwości", href: "#produkt" },
+  { label: "Jak to działa", href: "#jak-to-dziala" },
+  { label: "W rozwoju", href: "#rozwoj" },
+  { label: "Platforma", href: "#platforma" },
+  { label: "Bezpieczeństwo", href: "#bezpieczenstwo" },
 ] as const;
 
 export type Feature = {
@@ -35,33 +36,34 @@ export type Feature = {
   tag?: string;
 };
 
+/** What already works today. */
 export const features: Feature[] = [
   {
     id: "kamery",
     icon: "Eye",
     title: "Kamery, które patrzą za Ciebie",
-    desc: "Kamery w oborze obserwują zwierzęta przez całą dobę i same rozpoznają, kiedy dzieje się coś ważnego.",
+    desc: "Kamery w oborze obserwują zwierzęta przez całą dobę i same wychwytują zdarzenia, które wymagają Twojej uwagi.",
     tag: "Kamery",
   },
   {
-    id: "czujniki",
+    id: "czujnik",
     icon: "Radio",
-    title: "Czujniki na kolczyku i obroży",
-    desc: "Małe czujniki śledzą ruch i kondycję każdej sztuki — od razu widać, która krowa odstaje od reszty.",
-    tag: "Czujniki",
+    title: "Czujnik na obroży",
+    desc: "Każda krowa nosi czujnik na obroży. Dzięki niemu system wie, której sztuki dotyczy zdarzenie wykryte przez kamerę.",
+    tag: "Obroża",
   },
   {
     id: "bez-internetu",
     icon: "WifiOff",
-    title: "Działa nawet bez internetu",
-    desc: "Wszystko liczy się na miejscu, w oborze. Chwilowy brak zasięgu czy łącza nie sprawi, że coś Ci umknie.",
-    tag: "Bez internetu",
+    title: "Zbiera dane bez internetu",
+    desc: "Kamery i czujniki pracują dalej, nawet gdy nie ma łącza. Internet jest potrzebny, by powiadomienia trafiały na telefon i do aplikacji webowej.",
+    tag: "Lokalnie",
   },
   {
     id: "alerty",
     icon: "BellRing",
     title: "Alert od razu na telefon",
-    desc: "Ruja, wycielenie, kulawizna czy upadek — dostajesz powiadomienie z krótkim nagraniem w mniej niż minutę.",
+    desc: "Gdy system wykryje zdarzenie, dostajesz powiadomienie z numerem krowy i krótkim nagraniem z obory.",
     tag: "Na żywo",
   },
   {
@@ -80,80 +82,171 @@ export const features: Feature[] = [
   },
 ];
 
-export type DetectionEvent = {
-  title: string;
-  desc: string;
-  severity: "alert" | "warn" | "ok";
-};
-
-export const detections: DetectionEvent[] = [
-  {
-    title: "Ruja",
-    desc: "Rozpozna ruję we właściwym momencie, żebyś nie przegapił terminu krycia.",
-    severity: "ok",
-  },
-  {
-    title: "Wycielenie",
-    desc: "Da znać, gdy zbliża się poród — pomoc w porę ratuje cielę i krowę.",
-    severity: "warn",
-  },
-  {
-    title: "Kulawizna",
-    desc: "Wychwyci problem z nogami wcześnie, zanim krowa zacznie chudnąć i spadnie mleczność.",
-    severity: "warn",
-  },
-  {
-    title: "Walka i przepychanki",
-    desc: "Niebezpieczne starcia w grupie zauważy od razu, zanim dojdzie do urazu.",
-    severity: "alert",
-  },
-  {
-    title: "Upadek",
-    desc: "Nagły upadek zwierzęcia to natychmiastowy alert o najwyższej wadze.",
-    severity: "alert",
-  },
-  {
-    title: "Krowa, która nie wstaje",
-    desc: "Sztukę, która leży zbyt długo, oznaczy do szybkiego sprawdzenia.",
-    severity: "alert",
-  },
-];
-
 export type Step = {
   n: string;
   title: string;
   desc: string;
 };
 
+/** Operating principle: camera + collar sensor → which cow → alert. */
 export const steps: Step[] = [
   {
     n: "01",
-    title: "Kamery i czujniki obserwują stado",
-    desc: "Przez całą dobę zbierają obraz i informacje o każdym zwierzęciu — Ty nie musisz przy tym być.",
+    title: "Kamera wykrywa zdarzenie",
+    desc: "Kamery w oborze obserwują stado przez całą dobę i wychwytują sytuacje, które odbiegają od normy.",
   },
   {
     n: "02",
-    title: "Zagroda rozpoznaje, co się dzieje",
-    desc: "Sama zauważa ważne sytuacje i nagrywa krótki filmik z miejsca zdarzenia.",
+    title: "Czujnik rejestruje to samo zdarzenie",
+    desc: "W tym samym momencie czujnik na obroży zapisuje ruch krowy, która go nosi.",
   },
   {
     n: "03",
-    title: "Dostajesz powiadomienie",
-    desc: "W mniej niż minutę alert z nagraniem trafia na Twój telefon i komputer.",
+    title: "System wskazuje, która to krowa",
+    desc: "Zagroda łączy obraz z kamery z danymi z obroży i przypisuje zdarzenie do konkretnej sztuki.",
   },
   {
     n: "04",
-    title: "Reagujesz w porę",
-    desc: "Wiesz, do której sztuki iść i z czym — zanim zrobi się poważny problem.",
+    title: "Dostajesz powiadomienie",
+    desc: "Alert z numerem krowy i krótkim nagraniem trafia na Twój telefon i do aplikacji webowej.",
   },
 ];
 
+export type PlannedFeature = {
+  id: string;
+  icon: string;
+  title: string;
+  desc: string;
+};
+
+/** What we are building next (shown under "W rozwoju"). */
+export const planned: PlannedFeature[] = [
+  {
+    id: "ruja",
+    icon: "Heart",
+    title: "Wykrywanie rui",
+    desc: "Wychwycenie rui na podstawie zmian w zachowaniu krowy, żeby nie przegapić terminu inseminacji.",
+  },
+  {
+    id: "kulawizny",
+    icon: "Footprints",
+    title: "Kulawizny",
+    desc: "Wczesne wychwycenie problemów z chodzeniem — zanim spadnie mleczność i kondycja.",
+  },
+  {
+    id: "temperatura",
+    icon: "Thermometer",
+    title: "Temperatura ciała",
+    desc: "Analiza temperatury krowy skorygowana o temperaturę otoczenia, więc upał w oborze nie wywoła fałszywego alarmu.",
+  },
+  {
+    id: "upadek",
+    icon: "TriangleAlert",
+    title: "Upadek",
+    desc: "Natychmiastowy alert o najwyższej wadze, gdy krowa się przewróci.",
+  },
+  {
+    id: "zdarzenia-losowe",
+    icon: "Zap",
+    title: "Zdarzenia losowe",
+    desc: "Nietypowe sytuacje w oborze, np. przepychanki w grupie albo krowa, która zbyt długo nie wstaje.",
+  },
+  {
+    id: "zgubienie-czujnika",
+    icon: "MapPinOff",
+    title: "Zgubienie czujnika",
+    desc: "Powiadomienie, gdy obroża z czujnikiem spadnie albo przestanie przesyłać dane.",
+  },
+];
+
+/** Example 24 h activity split used in the "W rozwoju" visual (sums to 24). */
+export const activityDay = [
+  { label: "Je", hours: 4.5, color: "bg-brand" },
+  { label: "Przeżuwa", hours: 8, color: "bg-[#7fb48f]" },
+  { label: "Śpi i odpoczywa", hours: 9.5, color: "bg-[#c9dcc8]" },
+  { label: "Chodzi", hours: 2, color: "bg-warn" },
+] as const;
+
+export const herdManagement = [
+  "Karta każdej krowy — zdarzenia, leczenia, inseminacje, wycielenia i notatki",
+  "Automatyczne przypomnienia o proponowanym terminie zasuszenia, zapłodnienia i innych zabiegach",
+  "Wszystkie alerty z obory w jednym miejscu — z numerem krowy i nagraniem",
+  "Dostęp z telefonu i z komputera, bez instalowania programów",
+] as const;
+
+export const roadmap = [
+  {
+    status: "done",
+    label: "Gotowe",
+    title: "Fundament systemu",
+    desc: "Kamery, czujnik na obroży, powiadomienia na telefon i podgląd na komputerze.",
+  },
+  {
+    status: "now",
+    label: "Teraz",
+    title: "Rozwój i testy",
+    desc: "Dopracowujemy system i zbieramy opinie hodowców — także Twoją.",
+  },
+  {
+    status: "next",
+    label: "Dalej",
+    title: "Zdrowie i zachowanie krowy",
+    desc: "Aktywność, ruja, kulawizny, temperatura i pełne zarządzanie stadem w platformie.",
+  },
+] as const;
+
+export const faq = [
+  {
+    q: "Czy Zagroda działa bez internetu?",
+    a: "Częściowo tak. Kamery i czujniki obserwują stado i zbierają dane na miejscu, nawet gdy nie ma łącza. Internet jest potrzebny, żeby powiadomienia trafiały na Twój telefon i do aplikacji webowej.",
+  },
+  {
+    q: "Czy nagrania z obory trafiają do internetu?",
+    a: "Nie. Obraz z kamer jest analizowany na miejscu i nigdy nie opuszcza obory. Do aplikacji trafiają wyłącznie krótkie urywki konkretnych zdarzeń.",
+  },
+  {
+    q: "Skąd system wie, której krowy dotyczy zdarzenie?",
+    a: "Kamera wykrywa zdarzenie, a czujnik na obroży w tym samym momencie rejestruje ruch krowy, która go nosi. Zagroda łączy te dwie informacje i wskazuje konkretną sztukę.",
+  },
+  {
+    q: "Jaki czujnik nosi krowa?",
+    a: "Na tym etapie jeden czujnik zamocowany na obroży krowy. To on pozwala przypisać każde zdarzenie do właściwej sztuki.",
+  },
+  {
+    q: "Czy każda krowa jest oceniana tak samo?",
+    a: "Nie. System będzie uczył się każdej krowy osobno — jej rytmu dnia, aktywności i temperatury — i zareaguje, gdy coś odbiega od jej własnej normy, a nie od średniej dla stada.",
+  },
+  {
+    q: "Czy całym stadem mogę zarządzać w aplikacji?",
+    a: "Tak. Zarządzanie stadem może w pełni odbywać się z poziomu platformy: karta każdej krowy, historia, leczenia oraz automatyczne przypomnienia o terminie zasuszenia, zapłodnienia i innych zabiegach.",
+  },
+  {
+    q: "Kiedy Zagroda będzie dostępna?",
+    a: "Projekt jest w fazie rozwoju. Jeśli chcesz być na bieżąco albo przetestować system u siebie, wypełnij ankietę lub zostaw kontakt — odezwiemy się.",
+  },
+] as const;
+
+export const contactTopics = [
+  "Chcę dowiedzieć się więcej",
+  "Chcę przetestować Zagrodę u siebie",
+  "Współpraca lub inwestycja",
+  "Inne",
+] as const;
+
+export const herdSizes = [
+  "do 50 krów",
+  "50–100 krów",
+  "100–300 krów",
+  "ponad 300 krów",
+] as const;
+
 export const trustPoints = [
-  "Montaż u Ciebie w gospodarstwie",
+  "Montaż w Twoim gospodarstwie",
   "Pomoc po polsku",
   "Sprzęt w komplecie",
-  "Działa bez internetu",
-  "Aktualizacje w cenie",
-  "Bez ukrytych kosztów",
-  "Wsparcie 7 dni w tygodniu",
+  "Czujnik na obroży",
+  "Zbiera dane bez internetu",
+  "Obraz z kamer zostaje w oborze",
+  "Analiza dla każdej krowy osobno",
+  "Rozwijane razem z hodowcami",
 ];

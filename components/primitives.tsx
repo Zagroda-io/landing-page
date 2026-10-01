@@ -38,7 +38,7 @@ export function Eyebrow({
 type ButtonProps = {
   href: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "light" | "outlineLight";
   className?: string;
   external?: boolean;
 };
@@ -52,7 +52,17 @@ const variants = {
   secondary:
     "border border-line-strong bg-bg text-ink hover:bg-bg-soft hover:border-ink/25",
   ghost: "text-ink/80 hover:text-ink hover:bg-bg-soft",
+  /* for dark surfaces */
+  light: "bg-white text-ink hover:bg-white/90",
+  outlineLight: "border border-white/20 text-white hover:bg-white/10",
 };
+
+/** target/rel for links that leave the site (http only — not mailto/tel). */
+export function linkTargetProps(href: string) {
+  return href.startsWith("http")
+    ? { target: "_blank", rel: "noopener noreferrer" }
+    : {};
+}
 
 export function ButtonLink({
   href,
@@ -64,12 +74,7 @@ export function ButtonLink({
   const cls = cn(base, variants[variant], className);
   if (external || href.startsWith("http") || href.startsWith("mailto")) {
     return (
-      <a
-        href={href}
-        target={href.startsWith("http") ? "_blank" : undefined}
-        rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-        className={cls}
-      >
+      <a href={href} {...linkTargetProps(href)} className={cls}>
         {children}
       </a>
     );
@@ -78,6 +83,27 @@ export function ButtonLink({
     <Link href={href} className={cls}>
       {children}
     </Link>
+  );
+}
+
+/** Small amber "in development" marker. */
+export function DevBadge({
+  children = "W rozwoju",
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border border-warn/25 bg-warn/10 px-2.5 py-1 text-[11px] font-medium text-[#8a5f0f]",
+        className,
+      )}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-warn" />
+      {children}
+    </span>
   );
 }
 

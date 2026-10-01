@@ -32,9 +32,10 @@ export const metadata: Metadata = {
   keywords: [
     "monitoring bydła",
     "kamery w oborze",
-    "czujniki dla krów",
+    "czujnik na obroży",
+    "zarządzanie stadem",
     "wykrywanie rui",
-    "wykrywanie wycielenia",
+    "aktywność krowy",
     "alerty dla rolników",
     "opieka nad stadem",
     "Zagroda.io",

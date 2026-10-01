@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { Container } from "@/components/primitives";
-import { nav, site } from "@/lib/site";
+import { Container, linkTargetProps } from "@/components/primitives";
+import { nav, site, surveyHref } from "@/lib/site";
 
 export function Footer() {
   return (
@@ -11,8 +11,8 @@ export function Footer() {
           <div className="max-w-xs">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted">
-              Czuwamy nad Twoim stadem dzień i noc. Kamery i czujniki, które same
-              rozpoznają ważne sytuacje i od razu dają znać.
+              Opieka nad stadem przez całą dobę. Kamera wykrywa zdarzenie,
+              czujnik na obroży wskazuje krowę, a Ty dostajesz powiadomienie.
             </p>
             <p className="mt-4 text-sm">
               <a
@@ -59,10 +59,19 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href={site.demoUrl}
+                    href={surveyHref}
+                    {...linkTargetProps(surveyHref)}
                     className="text-sm text-muted transition-colors hover:text-ink"
                   >
-                    Umów demo
+                    Ankieta dla hodowców
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#faq"
+                    className="text-sm text-muted transition-colors hover:text-ink"
+                  >
+                    Pytania i odpowiedzi
                   </a>
                 </li>
               </ul>
@@ -84,7 +93,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href={`mailto:${site.email}`}
+                    href="#kontakt"
                     className="text-sm text-muted transition-colors hover:text-ink"
                   >
                     Kontakt
@@ -109,7 +118,7 @@ export function Footer() {
           </p>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg px-2.5 py-1">
             <span className="h-1.5 w-1.5 rounded-full bg-warn" />
-            Platforma w wersji testowej
+            Projekt w fazie rozwoju · platforma w wersji testowej
           </span>
         </div>
       </Container>

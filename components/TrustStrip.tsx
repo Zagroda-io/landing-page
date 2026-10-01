@@ -5,9 +5,9 @@ import { trustPoints } from "@/lib/site";
 export function TrustStrip() {
   const items = [...trustPoints, ...trustPoints];
   return (
-    <section className="relative border-y border-line bg-bg-warm py-10">
+    <section className="relative border-y border-line bg-bg-warm py-12 sm:py-14">
       <Container>
-        <p className="mb-6 text-center text-xs uppercase tracking-[0.18em] text-faint">
+        <p className="mb-8 text-balance text-center text-xs uppercase leading-relaxed tracking-[0.18em] text-faint">
           Bierzemy na siebie całość — Ty zajmujesz się gospodarstwem
         </p>
       </Container>
