@@ -1,21 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import { Container, ButtonLink } from "@/components/primitives";
 import { AccentLines } from "@/components/AccentLines";
+import { DetectionDemo } from "@/components/DetectionDemo";
 import { surveyHref } from "@/lib/site";
 
-const HeroScene = dynamic(() => import("@/components/HeroScene"), {
-  ssr: false,
-  loading: () => null,
-});
-
 export function Hero() {
-  const [videoOk, setVideoOk] = useState(true);
-
   return (
     <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pb-28 sm:pt-44">
       {/* light backdrop + deep-green accent lines */}
@@ -92,73 +84,16 @@ export function Hero() {
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
               <div className="ml-3 flex items-center gap-1.5 rounded-md bg-white/[0.05] px-2.5 py-1 text-[11px] text-white/45">
-                Obora · podgląd na żywo
+                Obora · kamera 2
+                <span className="hidden sm:inline"> · nagranie nocne</span>
               </div>
-              <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-medium text-white/70">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_2px_rgba(74,222,128,0.6)]" />
-                NA ŻYWO
+              <span className="ml-auto inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium text-white/70">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#ff6a5e] shadow-[0_0_8px_2px_rgba(255,106,94,0.6)]" />
+                AI · ANALIZA
               </span>
             </div>
 
-            {/* viewport */}
-            <div className="relative h-[300px] sm:h-[460px]">
-              {/* fallback 3D scene (shows if video fails) */}
-              <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-grid-dark opacity-70" />
-                <HeroScene />
-              </div>
-
-              {/* background video */}
-              {videoOk && (
-                <video
-                  className="absolute inset-0 h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster="/hero-poster.jpg"
-                  onError={() => setVideoOk(false)}
-                >
-                  <source src="/hero.mp4" type="video/mp4" />
-                </video>
-              )}
-
-              {/* tint + accent lines for cohesion */}
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,16,11,0.25),rgba(7,16,11,0.55))]" />
-              <AccentLines
-                tone="light"
-                count={7}
-                className="opacity-60 mix-blend-soft-light"
-              />
-
-              {/* overlaid live alert */}
-              <div className="animate-float absolute bottom-5 left-5 w-[17rem] max-w-[80%] rounded-xl border border-white/10 bg-black/45 p-3.5 backdrop-blur-md">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#cf4034]/20">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#ff6a5e] shadow-[0_0_10px_2px_rgba(255,106,94,0.7)]" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold text-white">
-                        Zdarzenie · krowa #47
-                      </p>
-                      <span className="text-[11px] text-white/40">teraz</span>
-                    </div>
-                    <p className="mt-0.5 text-xs text-white/55">
-                      Obora B · nagranie w aplikacji
-                    </p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] font-medium text-white/75">
-                        Kamera 2
-                      </span>
-                      <span className="rounded-md bg-[#4ade80]/15 px-2 py-0.5 text-[11px] font-medium text-[#86efac]">
-                        Obroża #047
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <DetectionDemo />
           </div>
         </motion.div>
       </Container>

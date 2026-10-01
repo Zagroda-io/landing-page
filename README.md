@@ -71,27 +71,26 @@ public/
 - **Kolory marki** → `app/globals.css` (sekcja `@theme`, zmienne `--color-brand` itd.).
 - **Logo** → `components/Logo.tsx` oraz `public/icon.svg`.
 
-## Hero: scena 3D vs prawdziwe wideo
+## Hero: nagranie z obory + wizualizacja wykrywania
 
-Domyślnie Hero renderuje **interaktywną scenę Three.js** (pole z węzłami stada,
-omiatający skaner i pulsujące alerty) — działa bez żadnych zewnętrznych plików.
+Hero pokazuje prawdziwe nocne nagranie z kamery (`public/hero.mp4`, zapasowo
+`public/hero.webm`, okładka `public/hero-poster.jpg`) z nakładką
+`components/DetectionDemo.tsx`: ramka śledząca krowę, identyfikacja po obroży,
+analiza chodu i wynik „Podejrzenie kulawizny · 87%”. Nakładka jest zsynchronizowana
+z czasem wideo i oznaczona jako wizualizacja (wykrywanie kulawizn jest w rozwoju).
+Jeśli wideo się nie wczyta, wyświetla się scena 3D (`HeroScene.tsx`).
 
-Aby podmienić ją na **prawdziwy materiał wideo** (np. ujęcia z drona / obory):
+Podmiana nagrania:
 
-1. Wrzuć plik do `public/hero.mp4` (oraz `public/hero-poster.jpg`).
-2. W `components/Hero.tsx` zamień warstwę `<HeroScene />` na:
-
-   ```tsx
-   <video
-     className="h-full w-full object-cover opacity-60"
-     autoPlay muted loop playsInline
-     poster="/hero-poster.jpg"
-   >
-     <source src="/hero.mp4" type="video/mp4" />
-   </video>
+1. Przygotuj klip (bez dźwięku, ok. 15 s):
+   ```bash
+   ffmpeg -i nagranie.mov -t 16.5 -an -vf "scale=1244:-2:flags=lanczos,fps=30,format=yuv420p" \
+     -c:v libx264 -crf 25 -movflags +faststart public/hero.mp4
+   ffmpeg -i public/hero.mp4 -c:v libvpx-vp9 -b:v 0 -crf 38 public/hero.webm
+   ffmpeg -ss 0.2 -i public/hero.mp4 -frames:v 1 public/hero-poster.jpg
    ```
-
-Można też zostawić oba: wideo jako tło + scena 3D jako nakładka.
+2. W `DetectionDemo.tsx` zaktualizuj `track` (pozycje ramki w % kadru w kolejnych
+   sekundach), czasy faz w `T` i proporcje w `aspect-[1244/592]`.
 
 ## Formularz kontaktowy
 

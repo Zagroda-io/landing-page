@@ -184,6 +184,17 @@
   .animate-float {
     animation: float-slow 7s ease-in-out infinite;
   }
+
+  /* sweeping line inside the detection box (gait analysis) */
+  @keyframes scan {
+    0%,
+    100% {
+      top: 4%;
+    }
+    50% {
+      top: 96%;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
