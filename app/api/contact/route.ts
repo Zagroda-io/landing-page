@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { site } from "@/lib/site";
 import {
-  EMAIL_RE,
   contactLimits,
+  contactSubject,
   contactSummary,
+  validateContact,
   type ContactPayload,
 } from "@/lib/contact";
 
 /**
- * Contact form endpoint. Delivers submissions by e-mail through Resend
+ * Fallback contact endpoint, used only when site.web3formsKey is empty (the
+ * form normally posts straight to Web3Forms). Delivers by e-mail through Resend
  * (https://resend.com). Configure with environment variables:
  *   RESEND_API_KEY      — required, otherwise the endpoint answers 503 and the
  *                         form offers a mailto fallback instead
@@ -56,12 +58,7 @@ export async function POST(req: Request) {
     consent: body.consent === true,
   };
 
-  if (
-    !p.name ||
-    (!p.email && !p.phone) ||
-    (p.email && !EMAIL_RE.test(p.email)) ||
-    !p.consent
-  ) {
+  if (Object.keys(validateContact(p)).length > 0) {
     return reply(400, "invalid");
   }
 
@@ -86,7 +83,7 @@ export async function POST(req: Request) {
           `Zagroda.io <formularz@${site.domain}>`,
         to: [process.env.CONTACT_TO_EMAIL ?? site.email],
         reply_to: p.email || undefined,
-        subject: `[zagroda.io] ${p.topic || "Kontakt"} — ${p.name}`,
+        subject: contactSubject(p),
         text: contactSummary(p),
       }),
     });

@@ -94,19 +94,29 @@ Podmiana nagrania:
 
 ## Formularz kontaktowy
 
-Formularz wysyła zgłoszenia na `POST /api/contact`, a ten — e-mailem przez
-[Resend](https://resend.com). Zmienne środowiskowe (patrz `.env.example`):
+Formularz wysyła zgłoszenia prosto z przeglądarki do
+[Web3Forms](https://web3forms.com), a ten przesyła je e-mailem na adres, dla
+którego utworzono klucz (`kontakt@zagroda.io`).
+
+- Klucz: `lib/site.ts` → `web3formsKey`. Klucz jest publiczny z założenia
+  (pozwala wysyłać tylko na tę jedną skrzynkę), więc może być w kodzie.
+- W darmowym planie Web3Forms przyjmuje zgłoszenia tylko z przeglądarki, dlatego
+  zapytanie nie idzie przez serwer Next.js. Działa na każdym hostingu, także
+  statycznym.
+- Walidacja z polskimi komunikatami: `lib/contact.ts` → `validateContact`
+  (te same reguły w formularzu i w `/api/contact`).
+- Gdy wysyłka się nie uda, formularz proponuje wysłanie tej samej wiadomości
+  z poczty użytkownika (link `mailto:`).
+- Ochrona przed botami: ukryte pole-pułapka (honeypot).
+
+Zapasowo, gdy `web3formsKey` jest pusty, formularz używa `POST /api/contact`,
+który wysyła e-mail przez [Resend](https://resend.com) (wymaga serwera Next.js):
 
 | Zmienna | Opis |
 | --- | --- |
-| `RESEND_API_KEY` | klucz API Resend (wymagany do wysyłki) |
-| `CONTACT_TO_EMAIL` | odbiorca zgłoszeń (domyślnie `kontakt@zagroda.io`) |
-| `CONTACT_FROM_EMAIL` | nadawca w domenie zweryfikowanej w Resend (domyślnie `Zagroda.io <formularz@zagroda.io>`) |
-
-Bez `RESEND_API_KEY` endpoint zwraca 503, a formularz proponuje wysłanie tej samej
-wiadomości z poczty użytkownika (gotowy link `mailto:`) — nic nie ginie.
-Endpoint wymaga serwera Next.js (np. Vercel); przy eksporcie statycznym działa tylko
-wariant `mailto:`. Ochrona przed botami: ukryte pole-pułapka (honeypot).
+| `RESEND_API_KEY` | klucz API Resend |
+| `CONTACT_TO_EMAIL` | odbiorca (domyślnie `kontakt@zagroda.io`) |
+| `CONTACT_FROM_EMAIL` | nadawca w domenie zweryfikowanej w Resend |
 
 ## Linki produktowe
 

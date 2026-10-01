@@ -9,21 +9,44 @@ import {
   Send,
 } from "lucide-react";
 import { contactTopics, herdSizes, site } from "@/lib/site";
-import { contactSummary, type ContactPayload } from "@/lib/contact";
+import {
+  contactSummary,
+  validateContact,
+  web3formsBody,
+  type ContactErrors,
+  type ContactPayload,
+} from "@/lib/contact";
 import { cn } from "@/lib/cn";
 
 type Status = "idle" | "sending" | "sent" | "fallback";
 
 const input =
   "w-full rounded-xl border border-line-strong bg-bg px-4 py-3 text-sm text-ink placeholder:text-faint transition focus:border-ink/40 focus:outline-none focus:ring-4 focus:ring-ink/5";
+const invalidInput = "border-alert/60 focus:border-alert focus:ring-alert/10";
+
+/** Order in which invalid fields get focus after a failed submit. */
+const focusOrder = ["name", "email", "phone", "consent"] as const;
+
+function ErrorText({ id, children }: { id: string; children?: string }) {
+  if (!children) return null;
+  return (
+    <span id={id} className="text-xs text-alert">
+      {children}
+    </span>
+  );
+}
 
 function Field({
   label,
   hint,
+  error,
+  errorId,
   children,
 }: {
   label: string;
   hint?: string;
+  error?: string;
+  errorId?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -33,6 +56,7 @@ function Field({
         {hint && <span className="font-normal text-faint"> · {hint}</span>}
       </span>
       {children}
+      {errorId && <ErrorText id={errorId}>{error}</ErrorText>}
     </label>
   );
 }
@@ -40,6 +64,37 @@ function Field({
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<ContactErrors>({});
+
+  /** aria + red border for a field that failed validation. */
+  const invalid = (name: "name" | "email" | "phone", alsoWhen?: string) => {
+    const bad = Boolean(errors[name] || alsoWhen);
+    return {
+      "aria-invalid": bad || undefined,
+      "aria-describedby": bad
+        ? errors[name]
+          ? `${name}-error`
+          : "contact-error"
+        : undefined,
+      className: cn(input, bad && invalidInput),
+    };
+  };
+
+  // drop a field's message as soon as the user edits it
+  function onChange(e: React.FormEvent<HTMLFormElement>) {
+    const name = (e.target as HTMLInputElement).name;
+    setErrors((prev) => {
+      if (
+        !prev[name as keyof ContactErrors] &&
+        !(prev.contact && (name === "email" || name === "phone"))
+      )
+        return prev;
+      const next = { ...prev };
+      delete next[name as keyof ContactErrors];
+      if (name === "email" || name === "phone") delete next.contact;
+      return next;
+    });
+  }
   const [mailto, setMailto] = useState<string>(`mailto:${site.email}`);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -59,8 +114,15 @@ export function ContactForm() {
       consent: fd.get("consent") === "on",
     };
 
-    if (!payload.email && !payload.phone) {
-      setError("Podaj e-mail albo numer telefonu, żebyśmy mogli się odezwać.");
+    const found = validateContact(payload);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      setError(null);
+      const first = focusOrder.find(
+        (k) => found[k] || (k === "email" && found.contact),
+      );
+      if (first)
+        (form.elements.namedItem(first) as HTMLElement | null)?.focus();
       return;
     }
     setError(null);
@@ -71,18 +133,38 @@ export function ContactForm() {
       `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(contactSummary(payload))}`,
     );
 
+    // honeypot filled → a bot; look successful, send nothing
+    if (text("website")) {
+      form.reset();
+      setStatus("sent");
+      return;
+    }
+
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, website: text("website") }),
-      });
-      if (res.ok) {
+      const res = site.web3formsKey
+        ? await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(web3formsBody(payload, site.web3formsKey)),
+          })
+        : await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+      const json = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        ok?: boolean;
+      };
+      if (res.ok && (json.success || json.ok)) {
         form.reset();
         setStatus("sent");
         return;
       }
-      if (res.status === 400) {
+      if (!site.web3formsKey && res.status === 400) {
         setError(
           "Sprawdź, czy wszystkie wymagane pola są poprawnie wypełnione.",
         );
@@ -112,7 +194,10 @@ export function ContactForm() {
         </p>
         <button
           type="button"
-          onClick={() => setStatus("idle")}
+          onClick={() => {
+            setErrors({});
+            setStatus("idle");
+          }}
           className="mt-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-bg-soft"
         >
           Dodaj kolejny kontakt
@@ -122,39 +207,56 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="relative flex flex-col gap-5">
-      <Field label="Imię i nazwisko">
+    // noValidate: browser bubbles follow the browser's language (often
+    // English); we show our own Polish messages under the fields instead
+    <form
+      onSubmit={onSubmit}
+      onChange={onChange}
+      noValidate
+      className="relative flex flex-col gap-5"
+    >
+      <Field label="Imię i nazwisko" error={errors.name} errorId="name-error">
         <input
           name="name"
           required
           maxLength={120}
           autoComplete="name"
           placeholder="Jan Kowalski"
-          className={input}
+          {...invalid("name")}
         />
       </Field>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="E-mail">
-          <input
-            name="email"
-            type="email"
-            maxLength={200}
-            autoComplete="email"
-            placeholder="jan@gospodarstwo.pl"
-            className={input}
-          />
-        </Field>
-        <Field label="Telefon">
-          <input
-            name="phone"
-            type="tel"
-            maxLength={40}
-            autoComplete="tel"
-            placeholder="600 000 000"
-            className={input}
-          />
-        </Field>
+      <div className="flex flex-col gap-1.5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="E-mail" error={errors.email} errorId="email-error">
+            <input
+              name="email"
+              type="email"
+              inputMode="email"
+              maxLength={200}
+              autoComplete="email"
+              placeholder="jan@gospodarstwo.pl"
+              {...invalid("email", errors.contact)}
+            />
+          </Field>
+          <Field label="Telefon" error={errors.phone} errorId="phone-error">
+            <input
+              name="phone"
+              type="tel"
+              maxLength={40}
+              autoComplete="tel"
+              placeholder="600 000 000"
+              {...invalid("phone", errors.contact)}
+            />
+          </Field>
+        </div>
+        {errors.contact ? (
+          <ErrorText id="contact-error">{errors.contact}</ErrorText>
+        ) : (
+          <span className="text-xs text-faint">
+            Wystarczy e-mail albo telefon.
+          </span>
+        )}
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -229,16 +331,27 @@ export function ContactForm() {
         </label>
       </div>
 
-      <label className="flex items-start gap-3 text-xs leading-relaxed text-muted">
-        <input
-          name="consent"
-          type="checkbox"
-          required
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-line-strong accent-[var(--color-brand-deep)]"
-        />
-        Zgadzam się na kontakt ze strony zespołu Zagroda.io w sprawie mojego
-        zgłoszenia. Dane z formularza wykorzystamy wyłącznie w tym celu.
-      </label>
+      <div className="flex flex-col gap-1.5">
+        <label className="flex items-start gap-3 text-xs leading-relaxed text-muted">
+          <input
+            name="consent"
+            type="checkbox"
+            required
+            aria-invalid={errors.consent ? true : undefined}
+            aria-describedby={errors.consent ? "consent-error" : undefined}
+            className={cn(
+              "mt-0.5 h-4 w-4 shrink-0 rounded border-line-strong accent-[var(--color-brand-deep)]",
+              errors.consent &&
+                "outline outline-2 outline-offset-2 outline-alert/60",
+            )}
+          />
+          Zgadzam się na kontakt ze strony zespołu Zagroda.io w sprawie mojego
+          zgłoszenia. Dane z formularza wykorzystamy wyłącznie w tym celu.
+        </label>
+        <span className="pl-7">
+          <ErrorText id="consent-error">{errors.consent}</ErrorText>
+        </span>
+      </div>
 
       {error && (
         <p

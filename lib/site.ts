@@ -15,6 +15,13 @@ export const site = {
   company: "Exito Development",
   companyUrl: "https://www.exito-development.pl/",
   email: "kontakt@zagroda.io",
+  /**
+   * Web3Forms access key — the contact form posts straight from the browser
+   * to Web3Forms, which e-mails each submission to the address the key was
+   * created for. The key is meant to be public (it only allows sending to
+   * that one inbox). Empty = fall back to /api/contact (Resend).
+   */
+  web3formsKey: "7881cd33-ea31-4104-8c8b-5e3427c4e3b5" as string,
   /** Leave empty to hide the phone number in the footer. */
   phone: "" as string,
   address: ["Grądy 12", "18-414 Nowogród"],
