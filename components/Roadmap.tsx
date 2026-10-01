@@ -41,8 +41,8 @@ function ActivityCard() {
       </h3>
       <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/65">
         Ile czasu krowa je, przeżuwa, śpi i chodzi. Mniej przeżuwania albo mniej
-        ruchu to często pierwszy sygnał, że coś jest nie tak — zanim zobaczysz
-        to gołym okiem.
+        ruchu to często pierwsze oznaki choroby — widoczne, zanim zauważysz je
+        gołym okiem.
       </p>
 
       <div className="mt-auto pt-8">
