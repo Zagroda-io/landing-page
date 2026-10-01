@@ -161,7 +161,7 @@ export const planned: PlannedFeature[] = [
 
 /** Example 24 h activity split used in the "W rozwoju" visual (sums to 24). */
 export const activityDay = [
-  { label: "Je", hours: 4.5, color: "bg-brand" },
+  { label: "Spożywanie pokarmu", hours: 4.5, color: "bg-brand" },
   { label: "Przeżuwa", hours: 8, color: "bg-[#7fb48f]" },
   { label: "Śpi i odpoczywa", hours: 9.5, color: "bg-[#c9dcc8]" },
   { label: "Chodzi", hours: 2, color: "bg-warn" },
