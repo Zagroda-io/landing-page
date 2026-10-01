@@ -12,6 +12,7 @@ import { contactTopics, herdSizes, site } from "@/lib/site";
 import {
   contactSummary,
   validateContact,
+  web3formsBody,
   type ContactErrors,
   type ContactPayload,
 } from "@/lib/contact";
@@ -132,18 +133,38 @@ export function ContactForm() {
       `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(contactSummary(payload))}`,
     );
 
+    // honeypot filled → a bot; look successful, send nothing
+    if (text("website")) {
+      form.reset();
+      setStatus("sent");
+      return;
+    }
+
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, website: text("website") }),
-      });
-      if (res.ok) {
+      const res = site.web3formsKey
+        ? await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(web3formsBody(payload, site.web3formsKey)),
+          })
+        : await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+      const json = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        ok?: boolean;
+      };
+      if (res.ok && (json.success || json.ok)) {
         form.reset();
         setStatus("sent");
         return;
       }
-      if (res.status === 400) {
+      if (!site.web3formsKey && res.status === 400) {
         setError(
           "Sprawdź, czy wszystkie wymagane pola są poprawnie wypełnione.",
         );

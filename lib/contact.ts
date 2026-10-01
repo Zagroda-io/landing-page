@@ -47,6 +47,35 @@ export function validateContact(p: ContactPayload): ContactErrors {
   return e;
 }
 
+export const contactSubject = (p: ContactPayload) =>
+  `[zagroda.io] ${p.topic || "Kontakt"} — ${p.name}`;
+
+/**
+ * Body for https://api.web3forms.com/submit. Every extra key is listed in
+ * the notification e-mail, so labels are in Polish and empty ones are left
+ * out. Web3Forms only accepts these calls from the browser on the free plan.
+ */
+export function web3formsBody(p: ContactPayload, accessKey: string) {
+  const fields: Record<string, string> = {
+    "Imię i nazwisko": p.name,
+    "E-mail": p.email,
+    Telefon: p.phone,
+    "Gospodarstwo / miejscowość": p.farm,
+    "Wielkość stada": p.herd,
+    Temat: p.topic,
+    Wiadomość: p.message,
+  };
+  for (const k of Object.keys(fields)) if (!fields[k]) delete fields[k];
+  return {
+    access_key: accessKey,
+    subject: contactSubject(p),
+    from_name: "Formularz Zagroda.io",
+    ...(p.email ? { replyto: p.email } : {}),
+    ...fields,
+    "Zgoda na kontakt": "tak",
+  };
+}
+
 /** Plain-text summary used as the e-mail body (and the mailto fallback). */
 export function contactSummary(p: ContactPayload) {
   const lines = [
