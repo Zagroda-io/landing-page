@@ -72,7 +72,14 @@ export function ButtonLink({
   external,
 }: ButtonProps) {
   const cls = cn(base, variants[variant], className);
-  if (external || href.startsWith("http") || href.startsWith("mailto")) {
+  // in-page anchors: a plain <a> always scrolls, next/link ignores a repeat
+  // click when the URL already carries the same #hash
+  if (
+    external ||
+    href.startsWith("#") ||
+    href.startsWith("http") ||
+    href.startsWith("mailto")
+  ) {
     return (
       <a href={href} {...linkTargetProps(href)} className={cls}>
         {children}
