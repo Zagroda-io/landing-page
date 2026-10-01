@@ -11,7 +11,7 @@ export const site = {
    * Dopóki jest pusty, przyciski „Wypełnij ankietę” prowadzą do formularza
    * kontaktowego, a kod QR w sekcji ankiety się nie wyświetla.
    */
-  surveyUrl: "" as string,
+  surveyUrl: "https://forms.gle/iAhgihQBxcrBpgzd6" as string,
   company: "Exito Development",
   companyUrl: "https://www.exito-development.pl/",
   email: "kontakt@zagroda.io",
