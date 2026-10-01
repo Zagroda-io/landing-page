@@ -15,6 +15,9 @@ export const site = {
   company: "Exito Development",
   companyUrl: "https://www.exito-development.pl/",
   email: "kontakt@zagroda.io",
+  /** Leave empty to hide the phone number in the footer. */
+  phone: "" as string,
+  address: ["Grądy 12", "18-414 Nowogród"],
 } as const;
 
 /** Where every "Wypełnij ankietę" button points. */

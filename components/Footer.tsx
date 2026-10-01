@@ -1,11 +1,11 @@
-import { ArrowUpRight } from "lucide-react";
-import { Logo } from "@/components/Logo";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { Logo, LogoMark } from "@/components/Logo";
 import { Container, linkTargetProps } from "@/components/primitives";
 import { nav, site, surveyHref } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-line bg-bg-warm py-14">
+    <footer className="relative overflow-hidden border-t border-line bg-bg-warm pt-14">
       <Container>
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           <div className="max-w-xs">
@@ -14,14 +14,34 @@ export function Footer() {
               Opieka nad stadem przez całą dobę. Kamera wykrywa zdarzenie,
               czujnik na obroży wskazuje krowę, a Ty dostajesz powiadomienie.
             </p>
-            <p className="mt-4 text-sm">
+            <address className="mt-5 flex flex-col gap-2.5 text-sm not-italic text-muted">
+              <span className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                <span>
+                  {site.address.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </span>
+              </span>
+              {site.phone && (
+                <a
+                  href={`tel:${site.phone.replace(/\s+/g, "")}`}
+                  className="flex items-center gap-2.5 transition-colors hover:text-ink"
+                >
+                  <Phone className="h-4 w-4 shrink-0 text-brand" />
+                  {site.phone}
+                </a>
+              )}
               <a
                 href={`mailto:${site.email}`}
-                className="text-muted transition-colors hover:text-ink"
+                className="flex items-center gap-2.5 transition-colors hover:text-ink"
               >
+                <Mail className="h-4 w-4 shrink-0 text-brand" />
                 {site.email}
               </a>
-            </p>
+            </address>
           </div>
 
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
@@ -122,6 +142,20 @@ export function Footer() {
           </span>
         </div>
       </Container>
+
+      {/* oversized wordmark across the full width */}
+      <div
+        aria-hidden="true"
+        className="mt-10 flex select-none items-center justify-center gap-[2vw] overflow-hidden px-5 pb-4 sm:px-8"
+      >
+        <LogoMark className="h-[12vw] w-[12vw] shrink-0 text-ink" />
+        <span
+          className="text-[19vw] font-semibold leading-[1.15] tracking-[-0.05em] text-ink"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          Zagroda
+        </span>
+      </div>
     </footer>
   );
 }
