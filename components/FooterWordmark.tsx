@@ -71,7 +71,7 @@ export function FooterWordmark() {
         </span>
       </div>
 
-      {seen && wide && family && (
+      {seen && wide && !still && family && (
         <div className="absolute inset-0">
           <WordmarkScene
             fontFamily={family}
