@@ -245,7 +245,6 @@ export const herdSizes = [
 
 export const trustPoints = [
   "Montaż w Twoim gospodarstwie",
-  "Pomoc po polsku",
   "Sprzęt w komplecie",
   "Czujnik na obroży",
   "Zbiera dane bez internetu",

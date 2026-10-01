@@ -37,7 +37,7 @@ const reasons = [
   },
   {
     icon: Wrench,
-    title: "Montaż i pomoc po polsku",
+    title: "Montaż i wsparcie",
     desc: "Przyjeżdżamy, montujemy i ustawiamy wszystko. Potem jesteśmy pod telefonem, kiedy potrzebujesz.",
   },
   {
