@@ -50,8 +50,8 @@ export function Hero() {
           >
             Kamery z AI obserwują stado przez całą dobę, a czujniki na obrożach
             mówią, co dzieje się z każdą krową. Razem pozwalają wcześnie
-            zauważyć chorobę, ruję czy kulawiznę i dać Ci znać, zanim zrobi się
-            z tego problem.
+            zauważyć chorobę, ruję czy kulawiznę i dać Ci znać, zanim będzie za
+            późno.
           </motion.p>
 
           <motion.div
