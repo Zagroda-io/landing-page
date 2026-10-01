@@ -31,18 +31,18 @@ const fills = [
 
 export function Features() {
   return (
-    <section id="produkt" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="produkt" className="relative py-24 sm:py-32">
       <Container>
         <Reveal>
           <SectionHeading
-            eyebrow="Co potrafi Zagroda"
+            eyebrow="Co już działa"
             title={
               <>
-                Wszystko w jednym,{" "}
-                <span className="text-gradient-brand">gotowe do działania</span>
+                Co Zagroda potrafi{" "}
+                <span className="text-gradient-brand">już dziś</span>
               </>
             }
-            subtitle="Kamery, czujniki, aplikacja i nasze wsparcie. Montujemy u Ciebie w gospodarstwie i pokazujemy, jak z tego korzystać."
+            subtitle="Pierwsza wersja systemu: kamery, czujnik na obroży, powiadomienia i aplikacja. Na tym fundamencie budujemy kolejne funkcje."
           />
         </Reveal>
 
