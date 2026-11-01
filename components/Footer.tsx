@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { FooterWordmark } from "@/components/FooterWordmark";
@@ -54,7 +55,7 @@ export function Footer() {
                 {nav.map((n) => (
                   <li key={n.href}>
                     <a
-                      href={n.href}
+                      href={`/${n.href}`}
                       className="text-sm text-muted transition-colors hover:text-ink"
                     >
                       {n.label}
@@ -89,7 +90,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#faq"
+                    href="/#faq"
                     className="text-sm text-muted transition-colors hover:text-ink"
                   >
                     Pytania i odpowiedzi
@@ -114,11 +115,27 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#kontakt"
+                    href="/#kontakt"
                     className="text-sm text-muted transition-colors hover:text-ink"
                   >
                     Kontakt
                   </a>
+                </li>
+                <li>
+                  <Link
+                    href="/regulamin"
+                    className="text-sm text-muted transition-colors hover:text-ink"
+                  >
+                    Regulamin
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/polityka-prywatnosci"
+                    className="text-sm text-muted transition-colors hover:text-ink"
+                  >
+                    Polityka prywatności
+                  </Link>
                 </li>
               </ul>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   ChevronDown,
   CircleCheck,
@@ -345,8 +346,19 @@ export function ContactForm() {
                 "outline outline-2 outline-offset-2 outline-alert/60",
             )}
           />
-          Zgadzam się na kontakt ze strony zespołu Zagroda.io w sprawie mojego
-          zgłoszenia. Dane z formularza wykorzystamy wyłącznie w tym celu.
+          <span>
+            Zgadzam się na kontakt ze strony zespołu Zagroda.io w sprawie mojego
+            zgłoszenia. Dane z formularza wykorzystamy wyłącznie w tym celu.
+            Szczegóły w{" "}
+            <Link
+              href="/polityka-prywatnosci"
+              target="_blank"
+              className="text-ink underline decoration-line-strong underline-offset-2 hover:decoration-ink"
+            >
+              polityce prywatności
+            </Link>
+            .
+          </span>
         </label>
         <span className="pl-7">
           <ErrorText id="consent-error">{errors.consent}</ErrorText>
