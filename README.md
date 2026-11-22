@@ -120,5 +120,5 @@ który wysyła e-mail przez [Resend](https://resend.com) (wymaga serwera Next.js
 
 ## Linki produktowe
 
-- Platforma (dev): https://app.dev.zagroda.io/
+- Platforma (dev): https://app.zagroda.io/
 - Konfiguracja w `lib/site.ts` → `appUrl`.

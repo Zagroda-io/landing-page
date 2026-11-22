@@ -166,7 +166,7 @@ export function PlatformShowcase() {
               </div>
               <p className="text-xs text-faint">
                 Platforma w wersji testowej ·{" "}
-                <span className="text-muted">app.dev.zagroda.io</span>
+                <span className="text-muted">app.zagroda.io</span>
               </p>
             </div>
           </Reveal>

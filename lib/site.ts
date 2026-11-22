@@ -4,7 +4,7 @@ export const site = {
   tagline: "Rolnictwo nowej generacji",
   description:
     "Zagroda.io to rozwijany system opieki nad stadem bydła. Kamera w oborze wykrywa zdarzenie, czujnik na obroży wskazuje, której krowy dotyczy, a Ty dostajesz powiadomienie na telefon. Całym stadem zarządzasz z jednej platformy.",
-  appUrl: "https://app.dev.zagroda.io/",
+  appUrl: "https://app.zagroda.io/",
   appLabel: "Zaloguj się",
   /**
    * Link do ankiety (np. Google Forms, Tally, Microsoft Forms).
